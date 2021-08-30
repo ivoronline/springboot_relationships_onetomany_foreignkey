@@ -7,18 +7,21 @@ import org.springframework.stereotype.Controller;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
 
 import java.util.HashSet;
+import java.util.Iterator;
 
-@Controller
+@RestController
 public class MyController {
 
-  @Autowired
-  AuthorRepository authorRepository;
+  @Autowired AuthorRepository authorRepository;
 
-  @ResponseBody
-  @RequestMapping("/addAuthor")
-  public String addAuthor() {
+  //===========================================================================
+  // ADD AUTHOR BOOKS
+  //===========================================================================
+  @RequestMapping("/AddAuthorBooks")
+  public String addAuthorBooks() {
 
     //CREATE BOOK ENTITIES
     Book    book1        = new Book();
@@ -40,6 +43,28 @@ public class MyController {
 
     //RETURN SOMETHING TO BROWSER
     return "Author & Books were stored into DB";
+
+  }
+
+  //===========================================================================
+  // GET AUTHOR BOOKS
+  //===========================================================================
+  @RequestMapping("GetAuthorBooks")
+  public String getAuthorBooks() {
+
+    //GET AUTHOR
+    Author author = authorRepository.findById(1).get();
+
+    //GET BOOKS
+    String   books         = "";
+    Iterator booksIterator = author.books.iterator();
+    while(booksIterator.hasNext()) {
+      Book book = (Book) booksIterator.next();
+      books += book.title + ", ";
+    }
+
+    //RETURN SOMETHING
+    return author.name + " has written: " + books;
 
   }
 
